@@ -1,0 +1,46 @@
+package br.com.enonnemacher.controller;
+
+import br.com.enonnemacher.domain.Anuncio;
+import br.com.enonnemacher.exception.CampoDuplicadoLongException;
+import br.com.enonnemacher.exception.IdNaoEncontradoException;
+import br.com.enonnemacher.request.CadastrarAnuncioRequest;
+import br.com.enonnemacher.service.AnuncioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/anuncios")
+public class AnuncioController {
+
+    @Autowired
+    private AnuncioService anuncioService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Anuncio salvar(@Valid @RequestBody CadastrarAnuncioRequest cadastrarAnuncioRequest) throws IdNaoEncontradoException, CampoDuplicadoLongException, CampoDuplicadoLongException {
+        return anuncioService.salvar(cadastrarAnuncioRequest);
+    }
+
+    @GetMapping
+    public Page<Anuncio> consultarAnuncios(@ApiIgnore @PageableDefault(sort = "valorDiaria", direction = Sort.Direction.ASC) Pageable pageable) {
+        return anuncioService.consultarAnuncios(pageable);
+    }
+
+    @GetMapping(path = "/anunciantes/{idAnunciante}")
+    public Page<Anuncio> consultarAnuncioAnunciante(@ApiIgnore @PageableDefault(sort = "valorDiaria", direction = Sort.Direction.ASC) Pageable pageable, @PathVariable Long idAnunciante) throws IdNaoEncontradoException {
+        return anuncioService.consultarAnuncioAnunciante(pageable, idAnunciante);
+    }
+
+    @DeleteMapping("/{id}")
+    public void removerAnuncio(@PathVariable Long id) throws IdNaoEncontradoException {
+        anuncioService.removerAnuncio(id);
+    }
+}

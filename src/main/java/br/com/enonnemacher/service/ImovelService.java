@@ -6,6 +6,7 @@ import br.com.enonnemacher.domain.Usuario;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.exception.ImovelComAnuncioException;
 import br.com.enonnemacher.exception.TipoDominioException;
+import br.com.enonnemacher.repository.AnuncioRepository;
 import br.com.enonnemacher.repository.ImovelRepository;
 import br.com.enonnemacher.request.CadastrarImovelRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class ImovelService {
 
     @Autowired
     private ImovelRepository imovelRepository;
-//    @Autowired
-//    private AnuncioRepository anuncioRepository;
+    @Autowired
+    private AnuncioRepository anuncioRepository;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -66,9 +67,9 @@ public class ImovelService {
     // 2.5 - Excluir um imóvel
     public void removerImovel(Long id) throws IdNaoEncontradoException, ImovelComAnuncioException {
         Imovel imovel = consultarImovelID(id);
-//        if(anuncioRepository.existsByImovelAndExcluidoFalse(imovel)){
-//            throw new ImovelComAnuncioException();
-//        }
+        if(anuncioRepository.existsByImovelAndExcluidoFalse(imovel)){
+            throw new ImovelComAnuncioException();
+        }
         imovel.setExcluido(true);
         imovelRepository.save(imovel);
     }
