@@ -3,7 +3,7 @@ package br.com.enonnemacher.controller;
 import br.com.enonnemacher.domain.Imovel;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.request.CadastrarImovelRequest;
-import br.com.enonnemacher.service.ImovelService;
+import br.com.enonnemacher.service.imovel.ImovelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

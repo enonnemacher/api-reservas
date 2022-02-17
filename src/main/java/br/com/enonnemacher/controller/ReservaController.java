@@ -6,7 +6,7 @@ import br.com.enonnemacher.domain.Reserva;
 import br.com.enonnemacher.exception.*;
 import br.com.enonnemacher.request.CadastrarReservaRequest;
 import br.com.enonnemacher.response.InformacaoReservaResponse;
-import br.com.enonnemacher.service.ReservaService;
+import br.com.enonnemacher.service.reserva.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

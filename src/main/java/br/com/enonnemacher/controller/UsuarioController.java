@@ -2,7 +2,7 @@ package br.com.enonnemacher.controller;
 
 import br.com.enonnemacher.domain.Usuario;
 import br.com.enonnemacher.request.AtualizarUsuarioRequest;
-import br.com.enonnemacher.service.UsuarioService;
+import br.com.enonnemacher.service.usuario.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,31 +19,43 @@ import javax.validation.Valid;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private CadastrarUsuarioService cadastrarUsuarioService;
+
+    @Autowired
+    private ListarUsuarioService listarUsuarioService;
+
+    @Autowired
+    private ListarUsuarioPorIdService listarUsuarioPorIdService;
+
+    @Autowired
+    private ListarUsuarioPorCpfService listarUsuarioPorCpfService;
+
+    @Autowired
+    private AtualizarUsuarioService atualizarUsuarioService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario salvar(@Valid @RequestBody Usuario usuario) throws Exception {
-        return usuarioService.salvar(usuario);
+        return cadastrarUsuarioService.salvar(usuario);
     }
 
     @GetMapping
     public Page<Usuario> consultarUsuarios(@ApiIgnore @PageableDefault(sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
-        return usuarioService.consultarUsuarios(pageable);
+        return listarUsuarioService.consultarUsuarios(pageable);
     }
 
     @GetMapping(path = "/{id}")
     public Usuario consultarUsuario(@PathVariable Long id) throws Exception {
-        return usuarioService.consultarUsuarioID(id);
+        return listarUsuarioPorIdService.consultarUsuarioID(id);
     }
 
     @GetMapping(path = "/cpf/{cpf}")
     public Usuario consultarUsuarioCPF(@PathVariable String cpf) throws Exception {
-        return usuarioService.consultarUsuarioCPF(cpf);
+        return listarUsuarioPorCpfService.consultarUsuarioCPF(cpf);
     }
 
     @PutMapping(path = "/{id}")
     public Usuario atualizarUsuario(@PathVariable Long id, @RequestBody @Valid AtualizarUsuarioRequest atualizarUsuarioRequest) throws Exception {
-        return usuarioService.atualizarUsuario(id, atualizarUsuarioRequest);
+        return atualizarUsuarioService.atualizarUsuario(id, atualizarUsuarioRequest);
     }
 }

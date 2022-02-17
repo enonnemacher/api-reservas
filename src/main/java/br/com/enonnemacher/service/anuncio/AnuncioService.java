@@ -1,4 +1,4 @@
-package br.com.enonnemacher.service;
+package br.com.enonnemacher.service.anuncio;
 
 import br.com.enonnemacher.domain.Anuncio;
 import br.com.enonnemacher.domain.FormaPagamento;
@@ -9,6 +9,8 @@ import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.exception.TipoDominioException;
 import br.com.enonnemacher.repository.AnuncioRepository;
 import br.com.enonnemacher.request.CadastrarAnuncioRequest;
+import br.com.enonnemacher.service.imovel.ImovelService;
+import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +28,7 @@ public class AnuncioService {
     @Autowired
     private ImovelService imovelService;
     @Autowired
-    private UsuarioService usuarioService;
+    private ListarUsuarioPorIdService listarUsuarioPorIdService;
 
     // 3.1 - Anunciar imóvel
     public Anuncio salvar(CadastrarAnuncioRequest cadastrarAnuncioRequest) throws IdNaoEncontradoException, CampoDuplicadoLongException {
@@ -53,7 +55,7 @@ public class AnuncioService {
         return anuncioRepository.save(new Anuncio(null,
                 cadastrarAnuncioRequest.getTipoAnuncio(),
                 imovelService.consultarImovelID(cadastrarAnuncioRequest.getIdImovel()),
-                usuarioService.consultarUsuarioID(cadastrarAnuncioRequest.getIdAnunciante()),
+                listarUsuarioPorIdService.consultarUsuarioID(cadastrarAnuncioRequest.getIdAnunciante()),
                 cadastrarAnuncioRequest.getValorDiaria(),
                 formasPagamento,
                 cadastrarAnuncioRequest.getDescricao(),
@@ -68,7 +70,7 @@ public class AnuncioService {
 
     // 3.3 - Listar anúncios de um anunciante específico
     public Page<Anuncio> consultarAnuncioAnunciante(Pageable pageable, Long idAnunciante) throws IdNaoEncontradoException {
-        Usuario usuario = usuarioService.consultarUsuarioID(idAnunciante);
+        Usuario usuario = listarUsuarioPorIdService.consultarUsuarioID(idAnunciante);
         Page<Anuncio> listaAnuncioAnunciante = anuncioRepository.findAllByAnuncianteEqualsAndExcluidoFalse(pageable, usuario);
         return listaAnuncioAnunciante;
     }

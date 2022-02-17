@@ -1,4 +1,4 @@
-package br.com.enonnemacher.service;
+package br.com.enonnemacher.service.imovel;
 
 import br.com.enonnemacher.domain.CaracteristicaImovel;
 import br.com.enonnemacher.domain.Imovel;
@@ -9,6 +9,7 @@ import br.com.enonnemacher.exception.TipoDominioException;
 import br.com.enonnemacher.repository.AnuncioRepository;
 import br.com.enonnemacher.repository.ImovelRepository;
 import br.com.enonnemacher.request.CadastrarImovelRequest;
+import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class ImovelService {
     @Autowired
     private AnuncioRepository anuncioRepository;
     @Autowired
-    private UsuarioService usuarioService;
+    private ListarUsuarioPorIdService listarUsuarioPorIdService;
 
     // 2.1 - Cadastro de Imóvel
     public Imovel salvar(CadastrarImovelRequest cadastrarImovelRequest) throws IdNaoEncontradoException {
@@ -40,7 +41,7 @@ public class ImovelService {
         return imovelRepository.save(new Imovel(null, cadastrarImovelRequest.getIdentificacao(),
                 cadastrarImovelRequest.getTipoImovel(),
                 cadastrarImovelRequest.getEndereco(),
-                usuarioService.consultarUsuarioID(cadastrarImovelRequest.getIdProprietario()),
+                listarUsuarioPorIdService.consultarUsuarioID(cadastrarImovelRequest.getIdProprietario()),
                 caracteristicas, false));
     }
 
@@ -52,7 +53,7 @@ public class ImovelService {
 
     // 2.3 - Listar imóveis de um proprietário específico
     public Page<Imovel> consultarImovelProprietario(Pageable pageable, Long id) throws IdNaoEncontradoException {
-        Usuario usuario = usuarioService.consultarUsuarioID(id);
+        Usuario usuario = listarUsuarioPorIdService.consultarUsuarioID(id);
         Page<Imovel> listaImoveisDoProprietario = imovelRepository.findAllByProprietarioEqualsAndExcluidoFalse(pageable, usuario);
         return listaImoveisDoProprietario;
     }

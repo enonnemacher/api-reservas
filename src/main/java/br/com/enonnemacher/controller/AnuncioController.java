@@ -4,7 +4,7 @@ import br.com.enonnemacher.domain.Anuncio;
 import br.com.enonnemacher.exception.CampoDuplicadoLongException;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.request.CadastrarAnuncioRequest;
-import br.com.enonnemacher.service.AnuncioService;
+import br.com.enonnemacher.service.anuncio.AnuncioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

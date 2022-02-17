@@ -1,4 +1,4 @@
-package br.com.enonnemacher.service;
+package br.com.enonnemacher.service.reserva;
 
 import br.com.enonnemacher.domain.*;
 import br.com.enonnemacher.exception.*;
@@ -7,6 +7,8 @@ import br.com.enonnemacher.request.CadastrarReservaRequest;
 import br.com.enonnemacher.response.DadosAnuncioResponse;
 import br.com.enonnemacher.response.DadosSolicitanteResponse;
 import br.com.enonnemacher.response.InformacaoReservaResponse;
+import br.com.enonnemacher.service.anuncio.AnuncioService;
+import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,7 @@ public class ReservaService {
     @Autowired
     private ReservaRepository reservaRepository;
     @Autowired
-    private UsuarioService usuarioService;
+    private ListarUsuarioPorIdService listarUsuarioPorIdService;
     @Autowired
     private AnuncioService anuncioService;
 
@@ -86,7 +88,7 @@ public class ReservaService {
         pagamento.setStatus(StatusPagamento.PENDENTE);
 
         Reserva reserva = new Reserva();
-        reserva.setSolicitante(usuarioService.consultarUsuarioID(cadastrarReservaRequest.getIdSolicitante()));
+        reserva.setSolicitante(listarUsuarioPorIdService.consultarUsuarioID(cadastrarReservaRequest.getIdSolicitante()));
         reserva.setAnuncio(anuncioService.consultarAnuncioID(cadastrarReservaRequest.getIdAnuncio()));
         reserva.setPeriodo(periodo);
         reserva.setQuantidadePessoas(cadastrarReservaRequest.getQuantidadePessoas());
