@@ -6,7 +6,7 @@ import br.com.enonnemacher.domain.Reserva;
 import br.com.enonnemacher.exception.*;
 import br.com.enonnemacher.request.CadastrarReservaRequest;
 import br.com.enonnemacher.response.InformacaoReservaResponse;
-import br.com.enonnemacher.service.reserva.ReservaService;
+import br.com.enonnemacher.service.reserva.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,37 +23,52 @@ import javax.validation.Valid;
 public class ReservaController {
 
     @Autowired
-    private ReservaService reservaService;
+    private CadastrarReservaService cadastrarReservaService;
+
+    @Autowired
+    private ListarReservaPorIdSolicitanteService listarReservaPorIdSolicitanteService;
+
+    @Autowired
+    private ListarReservaPorIdAnuncianteService listarReservaPorIdAnuncianteService;
+
+    @Autowired
+    private PagarReservaService pagarReservaService;
+
+    @Autowired
+    private CancelarReservaService cancelarReservaService;
+
+    @Autowired
+    private EstornarReservaService estornarReservaService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InformacaoReservaResponse salvar(@Valid @RequestBody CadastrarReservaRequest cadastrarReservaRequest) throws ReservaSolicitanteMesmoAnuncianteException, ReservaMenorQueUmDiaException, ReservaMinimaException, IdNaoEncontradoException, DataFimReservaMaiorInicialException, ImovelComReservaAtivaException, ReservaSolicitanteMesmoAnuncianteException, ReservaMenorQueUmDiaException, ReservaMinimaException, IdNaoEncontradoException, DataFimReservaMaiorInicialException {
-        return reservaService.salvar(cadastrarReservaRequest);
+        return cadastrarReservaService.salvar(cadastrarReservaRequest);
     }
 
     @GetMapping(path = "/solicitantes/{idSolicitante}")
     public Page<Reserva> listarReservasPorIdSolicitante(@ApiIgnore @PageableDefault(sort = "periodo.dataHoraFinal", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable Long idSolicitante, Periodo periodo) {
-        Page<Reserva> listaReservas = reservaService.listarReservasPorIdSolicitante(pageable, idSolicitante, periodo);
+        Page<Reserva> listaReservas = listarReservaPorIdSolicitanteService.listarReservasPorIdSolicitante(pageable, idSolicitante, periodo);
         return listaReservas;
     }
 
     @GetMapping(path = "/anuncios/anunciantes/{idAnunciante}")
     public Page<Reserva> listarReservasPorIdAnunciante(@ApiIgnore @PageableDefault(sort = "periodo.dataHoraFinal", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable Long idAnunciante) {
-        return reservaService.listarReservasPorIdAnunciante(pageable, idAnunciante);
+        return listarReservaPorIdAnuncianteService.listarReservasPorIdAnunciante(pageable, idAnunciante);
     }
 
     @PutMapping(path = "/{idReserva}/pagamentos")
     public void pagarReserva(@PathVariable Long idReserva, @RequestBody FormaPagamento formaPagamento) throws NaoEncontradoLongException, StatusReservaException, FormaPagamentoNaoAceitaException {
-        reservaService.pagarReserva(idReserva, formaPagamento);
+        pagarReservaService.pagarReserva(idReserva, formaPagamento);
     }
 
     @PutMapping(path = "/{idReserva}/pagamentos/cancelar")
     public void cancelarReserva(@PathVariable Long idReserva) throws NaoEncontradoLongException, StatusReservaException {
-        reservaService.cancelarReserva(idReserva);
+        cancelarReservaService.cancelarReserva(idReserva);
     }
 
     @PutMapping(path = "/{idReserva}/pagamentos/estornar")
     public void estornarReserva(@PathVariable Long idReserva) throws NaoEncontradoLongException, StatusReservaException {
-        reservaService.estornarReserva(idReserva);
+        estornarReservaService.estornarReserva(idReserva);
     }
 }
