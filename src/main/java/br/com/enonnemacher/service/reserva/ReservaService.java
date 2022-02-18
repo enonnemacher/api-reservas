@@ -7,7 +7,7 @@ import br.com.enonnemacher.request.CadastrarReservaRequest;
 import br.com.enonnemacher.response.DadosAnuncioResponse;
 import br.com.enonnemacher.response.DadosSolicitanteResponse;
 import br.com.enonnemacher.response.InformacaoReservaResponse;
-import br.com.enonnemacher.service.anuncio.AnuncioService;
+import br.com.enonnemacher.service.anuncio.ListarAnuncioPorIdService;
 import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class ReservaService {
     @Autowired
     private ListarUsuarioPorIdService listarUsuarioPorIdService;
     @Autowired
-    private AnuncioService anuncioService;
+    private ListarAnuncioPorIdService anuncioService;
 
     // 4.1 - Realizar uma reserva
     public InformacaoReservaResponse salvar(CadastrarReservaRequest cadastrarReservaRequest) throws IdNaoEncontradoException, ReservaSolicitanteMesmoAnuncianteException, ReservaMenorQueUmDiaException, DataFimReservaMaiorInicialException, ReservaMinimaException, ImovelComReservaAtivaException {

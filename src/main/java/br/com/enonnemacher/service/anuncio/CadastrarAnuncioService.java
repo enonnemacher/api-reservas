@@ -3,7 +3,6 @@ package br.com.enonnemacher.service.anuncio;
 import br.com.enonnemacher.domain.Anuncio;
 import br.com.enonnemacher.domain.FormaPagamento;
 import br.com.enonnemacher.domain.Imovel;
-import br.com.enonnemacher.domain.Usuario;
 import br.com.enonnemacher.exception.CampoDuplicadoLongException;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.exception.TipoDominioException;
@@ -12,25 +11,22 @@ import br.com.enonnemacher.request.CadastrarAnuncioRequest;
 import br.com.enonnemacher.service.imovel.ListarImovelPorIdService;
 import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.Optional.ofNullable;
-
 @Service
-public class AnuncioService {
+public class CadastrarAnuncioService {
+
+    @Autowired
+    private ListarImovelPorIdService listarImovelPorIdService;
 
     @Autowired
     private AnuncioRepository anuncioRepository;
-    @Autowired
-    private ListarImovelPorIdService listarImovelPorIdService;
+
     @Autowired
     private ListarUsuarioPorIdService listarUsuarioPorIdService;
 
-    // 3.1 - Anunciar imóvel
     public Anuncio salvar(CadastrarAnuncioRequest cadastrarAnuncioRequest) throws IdNaoEncontradoException, CampoDuplicadoLongException {
         if (cadastrarAnuncioRequest.getIdImovel() == null) {
             throw new IdNaoEncontradoException(TipoDominioException.Imovel.getTipo(),
@@ -60,31 +56,5 @@ public class AnuncioService {
                 formasPagamento,
                 cadastrarAnuncioRequest.getDescricao(),
                 false));
-    }
-
-    // 3.2 - Listar anúncios
-    public Page<Anuncio> consultarAnuncios(Pageable pageable) {
-        Page<Anuncio> listaAnuncios = anuncioRepository.findAllByExcluidoFalse(pageable);
-        return listaAnuncios;
-    }
-
-    // 3.3 - Listar anúncios de um anunciante específico
-    public Page<Anuncio> consultarAnuncioAnunciante(Pageable pageable, Long idAnunciante) throws IdNaoEncontradoException {
-        Usuario usuario = listarUsuarioPorIdService.consultarUsuarioID(idAnunciante);
-        Page<Anuncio> listaAnuncioAnunciante = anuncioRepository.findAllByAnuncianteEqualsAndExcluidoFalse(pageable, usuario);
-        return listaAnuncioAnunciante;
-    }
-
-    // 3.4 - Excluir um anúncio
-    public void removerAnuncio(Long id) throws IdNaoEncontradoException {
-        Anuncio anuncio = consultarAnuncioID(id);
-        anuncio.setExcluido(true);
-        anuncioRepository.save(anuncio);
-    }
-
-    public Anuncio consultarAnuncioID(Long id) throws IdNaoEncontradoException {
-        return ofNullable(anuncioRepository.findByIdAndExcluidoFalse(id))
-                .orElseThrow(() -> new IdNaoEncontradoException(TipoDominioException.Anuncio.getTipo(),
-                        TipoDominioException.Id.getTipo(), id));
     }
 }

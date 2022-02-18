@@ -4,7 +4,10 @@ import br.com.enonnemacher.domain.Anuncio;
 import br.com.enonnemacher.exception.CampoDuplicadoLongException;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.request.CadastrarAnuncioRequest;
-import br.com.enonnemacher.service.anuncio.AnuncioService;
+import br.com.enonnemacher.service.anuncio.CadastrarAnuncioService;
+import br.com.enonnemacher.service.anuncio.ListarAnuncioPorAnuncianteService;
+import br.com.enonnemacher.service.anuncio.ListarAnuncioService;
+import br.com.enonnemacher.service.anuncio.RemoverAnuncioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,26 +24,35 @@ import javax.validation.Valid;
 public class AnuncioController {
 
     @Autowired
-    private AnuncioService anuncioService;
+    private CadastrarAnuncioService cadastrarAnuncioService;
+
+    @Autowired
+    private ListarAnuncioService listarAnuncioService;
+
+    @Autowired
+    private ListarAnuncioPorAnuncianteService listarAnuncioPorAnuncianteService;
+
+    @Autowired
+    private RemoverAnuncioService removerAnuncioService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Anuncio salvar(@Valid @RequestBody CadastrarAnuncioRequest cadastrarAnuncioRequest) throws IdNaoEncontradoException, CampoDuplicadoLongException, CampoDuplicadoLongException {
-        return anuncioService.salvar(cadastrarAnuncioRequest);
+        return cadastrarAnuncioService.salvar(cadastrarAnuncioRequest);
     }
 
     @GetMapping
     public Page<Anuncio> consultarAnuncios(@ApiIgnore @PageableDefault(sort = "valorDiaria", direction = Sort.Direction.ASC) Pageable pageable) {
-        return anuncioService.consultarAnuncios(pageable);
+        return listarAnuncioService.consultarAnuncios(pageable);
     }
 
     @GetMapping(path = "/anunciantes/{idAnunciante}")
     public Page<Anuncio> consultarAnuncioAnunciante(@ApiIgnore @PageableDefault(sort = "valorDiaria", direction = Sort.Direction.ASC) Pageable pageable, @PathVariable Long idAnunciante) throws IdNaoEncontradoException {
-        return anuncioService.consultarAnuncioAnunciante(pageable, idAnunciante);
+        return listarAnuncioPorAnuncianteService.consultarAnuncioAnunciante(pageable, idAnunciante);
     }
 
     @DeleteMapping("/{id}")
     public void removerAnuncio(@PathVariable Long id) throws IdNaoEncontradoException {
-        anuncioService.removerAnuncio(id);
+        removerAnuncioService.removerAnuncio(id);
     }
 }
