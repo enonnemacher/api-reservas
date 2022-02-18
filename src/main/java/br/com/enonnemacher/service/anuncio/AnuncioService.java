@@ -9,7 +9,7 @@ import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.exception.TipoDominioException;
 import br.com.enonnemacher.repository.AnuncioRepository;
 import br.com.enonnemacher.request.CadastrarAnuncioRequest;
-import br.com.enonnemacher.service.imovel.ImovelService;
+import br.com.enonnemacher.service.imovel.ListarImovelPorIdService;
 import br.com.enonnemacher.service.usuario.ListarUsuarioPorIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public class AnuncioService {
     @Autowired
     private AnuncioRepository anuncioRepository;
     @Autowired
-    private ImovelService imovelService;
+    private ListarImovelPorIdService listarImovelPorIdService;
     @Autowired
     private ListarUsuarioPorIdService listarUsuarioPorIdService;
 
@@ -44,7 +44,7 @@ public class AnuncioService {
                     cadastrarAnuncioRequest.getIdAnunciante());
         }
 
-        Imovel imovel = imovelService.consultarImovelID(cadastrarAnuncioRequest.getIdImovel());
+        Imovel imovel = listarImovelPorIdService.consultarImovelID(cadastrarAnuncioRequest.getIdImovel());
         if (anuncioRepository.existsByImovelAndExcluidoFalse(imovel)) {
             throw new CampoDuplicadoLongException(TipoDominioException.Anuncio.getTipo(),
                     TipoDominioException.IdImovel.getTipo(), cadastrarAnuncioRequest.getIdImovel());
@@ -54,7 +54,7 @@ public class AnuncioService {
 
         return anuncioRepository.save(new Anuncio(null,
                 cadastrarAnuncioRequest.getTipoAnuncio(),
-                imovelService.consultarImovelID(cadastrarAnuncioRequest.getIdImovel()),
+                listarImovelPorIdService.consultarImovelID(cadastrarAnuncioRequest.getIdImovel()),
                 listarUsuarioPorIdService.consultarUsuarioID(cadastrarAnuncioRequest.getIdAnunciante()),
                 cadastrarAnuncioRequest.getValorDiaria(),
                 formasPagamento,

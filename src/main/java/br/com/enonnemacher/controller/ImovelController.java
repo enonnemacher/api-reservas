@@ -3,7 +3,7 @@ package br.com.enonnemacher.controller;
 import br.com.enonnemacher.domain.Imovel;
 import br.com.enonnemacher.exception.IdNaoEncontradoException;
 import br.com.enonnemacher.request.CadastrarImovelRequest;
-import br.com.enonnemacher.service.imovel.ImovelService;
+import br.com.enonnemacher.service.imovel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,31 +20,43 @@ import javax.validation.Valid;
 public class ImovelController {
 
     @Autowired
-    private ImovelService imovelService;
+    private CadastrarImovelService cadastrarImovelService;
+
+    @Autowired
+    private ListarImovelService listarImovelService;
+
+    @Autowired
+    private ListarImovelPorProprietarioService listarImovelPorProprietarioService;
+
+    @Autowired
+    private ListarImovelPorIdService listarImovelPorIdService;
+
+    @Autowired
+    private RemoverImovelService removerImovelService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Imovel salvar(@Valid @RequestBody CadastrarImovelRequest cadastrarImovelRequest) throws IdNaoEncontradoException {
-        return imovelService.salvar(cadastrarImovelRequest);
+        return cadastrarImovelService.salvar(cadastrarImovelRequest);
     }
 
     @GetMapping
     public Page<Imovel> consultarImoveis(@ApiIgnore @PageableDefault(sort = "identificacao", direction = Sort.Direction.ASC) Pageable pageable) {
-        return imovelService.consultarImoveis(pageable);
+        return listarImovelService.consultarImoveis(pageable);
     }
 
     @GetMapping(path = "/proprietarios/{idProprietario}")
     public Page<Imovel> consultarImovelProprietario(@ApiIgnore @PageableDefault(sort = "identificacao", direction = Sort.Direction.ASC) Pageable pageable, @PathVariable Long idProprietario) throws IdNaoEncontradoException {
-        return imovelService.consultarImovelProprietario(pageable, idProprietario);
+        return listarImovelPorProprietarioService.consultarImovelProprietario(pageable, idProprietario);
     }
 
     @GetMapping(path = "/{idImovel}")
     public Imovel consultarImovelID(@PathVariable Long idImovel) throws IdNaoEncontradoException {
-        return imovelService.consultarImovelID(idImovel);
+        return listarImovelPorIdService.consultarImovelID(idImovel);
     }
 
     @DeleteMapping("/{id}")
     public void removerImovel(@PathVariable Long id) throws Exception {
-        imovelService.removerImovel(id);
+        removerImovelService.removerImovel(id);
     }
 }
