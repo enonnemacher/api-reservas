@@ -96,8 +96,12 @@ public class CadastrarReservaService {
 
         reservaRepository.save(reserva);
 
+        return retornoResponse(reserva.getId(), reserva, pagamento);
+    }
+
+    private InformacaoReservaResponse retornoResponse(Long idReserva, Reserva reserva, Pagamento pagamento) {
         InformacaoReservaResponse informacaoReservaResponse = new InformacaoReservaResponse();
-        informacaoReservaResponse.setIdReserva(reserva.getId());
+        informacaoReservaResponse.setIdReserva(idReserva);
         informacaoReservaResponse.setSolicitante(solicitanteResponse(reserva));
         informacaoReservaResponse.setQuantidadePessoas(reserva.getQuantidadePessoas());
         informacaoReservaResponse.setAnuncio(anuncioResponse(reserva));
